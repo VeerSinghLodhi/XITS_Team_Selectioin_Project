@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Captain Selection</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 0;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .captains-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .captains-title {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+
+        .captain-card {
+           /* background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);*/
+           background:#ffffff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .captain-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .captain-card.captain-1 {
+            border-color: #e74c3c;
+        }
+
+        .captain-card.captain-2 {
+            border-color: #3498db;
+        }
+
+        .captain-card.captain-3 {
+            border-color: #2ecc71;
+        }
+
+        .captain-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .captain-1 .captain-icon {
+            color: #e74c3c;
+        }
+
+        .captain-2 .captain-icon {
+            color: #3498db;
+        }
+
+        .captain-3 .captain-icon {
+            color: #2ecc71;
+        }
+
+        .captain-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .captain-role {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .input-title {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+        }
+
+        .member-input {
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .member-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.3rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        @media (max-width: 768px) {
+            .captains-section, .input-section {
+                padding: 25px;
+                margin: 0 15px 30px 15px;
+            }
+
+            .captain-card {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+
+            .captain-icon {
+                font-size: 2rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+        }
+
+         #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    /* Popup box */
+    #popup {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+        #countdown {
+      font-size: 32px;
+      font-weight: bold;
+      color: #e74c3c;
+      margin-top: 10px;
+    }
+    </style>
+</head>
+<body>
+
+<div class="container main-container">
+    <h1 class="page-title">
+        <i class="fas fa-users"></i> Select Your Team Captain
+    </h1>
+
+    <!-- Captains Display Section -->
+    <div class="captains-section">
+        <h2 class="captains-title">Available Team Captains</h2>
+        <div class="row">
+            <div class="col-md-4 mb-3" th:if="${captains.size() > 0}">
+                <div class="captain-card captain-1">
+                    <i class="fas fa-crown captain-icon"></i>
+                    <div class="captain-name" th:text="${captains[0].name}">Captain 1 Name</div>
+                    <div class="captain-role">Team Alpha Captain</div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3" th:if="${captains.size() > 1}">
+                <div class="captain-card captain-2">
+                    <i class="fas fa-star captain-icon"></i>
+                    <div class="captain-name" th:text="${captains[1].name}">Captain 2 Name</div>
+                    <div class="captain-role">Team Beta Captain</div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3" th:if="${captains.size() > 2}">
+                <div class="captain-card captain-3">
+                    <i class="fas fa-medal captain-icon"></i>
+                    <div class="captain-name" th:text="${captains[2].name}">Captain 3 Name</div>
+                    <div class="captain-role">Team Gamma Captain</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="input-section">
+        <h2 class="text-center mb-4">Assign 3 Students</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-3" th:each="s : ${studentBatch}">
+                <div class="card shadow-sm p-3">
+                    <h5 th:text="${s.studentname}">Student Name</h5>
+                </div>
+            </div>
+            <div th:if="${notStudentFound==true}" class="text-center fs-2 fw-bold">All students have been assigned to captains. Thank You!</div>
+        </div>
+
+        <form id="myForm"  th:action="@{/assign}" method="post" class="text-center mt-4">
+            <input type="hidden" name="page" th:value="${currentPage}" />
+            <button type="submit" class="btn btn-success">Submit & Assign</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Assigned Students Section -->
+<div class="container-fluid bg-white p-3 mt-5" style="height:100%;">
+<div class="container">
+    <h2 class="p-3 border rounded shadow-sm bg-white text-center mt-5">Assigned Students:</h2>
+    <div class="row">
+
+        <!-- Captain 1 Players -->
+        <div class="col-lg-4 col-md-6 col-sm-12" th:if="${captains.size() > 0}">
+            <div class="captain-card captain-1">
+                <div>
+                    <i class="fas fa-crown captain-icon me-3"></i>
+                    <div th:text="${captains[0].name}" class="captain-name"></div>
+                    <div class="captain-role">Team Alpha Captain</div>
+                </div>
+                <hr>
+                <div th:each="s, iStat : ${captain1Players}" class="bg-light">
+                    <div class="alert alert-info text-start">
+                        <b th:text="${iStat.count} + '. '"></b>
+                        <span th:text="${s.name}"></span> →
+                        <i th:text="${s.captain.name}"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Captain 2 Players -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-3" th:if="${captains.size() > 1}">
+            <div class="captain-card captain-2">
+                <div>
+                    <i class="fas fa-star captain-icon"></i>
+                    <div th:text="${captains[1].name}" class="captain-name"></div>
+                    <div class="captain-role">Team Beta Captain</div>
+                </div>
+                <hr>
+                <div th:each="s, iStat : ${captain2Players}">
+                    <div class="alert alert-info text-start">
+                        <b th:text="${iStat.count} + '. '"></b>
+                        <span th:text="${s.name}"></span> →
+                        <i th:text="${s.captain.name}"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Captain 3 Players -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-3" th:if="${captains.size() > 2}">
+            <div class="captain-card captain-3">
+                <div>
+                    <i class="fas fa-medal captain-icon"></i>
+                    <div th:text="${captains[2].name}" class="captain-name"></div>
+                    <div class="captain-role">Team Gamma Captain</div>
+                </div>
+                <hr>
+                <div th:each="s, iStat : ${captain3Players}" >
+                    <div class="alert alert-info text-start">
+                        <b th:text="${iStat.count} + '. '"></b>
+                        <span th:text="${s.name}"></span> →
+                        <i th:text="${s.captain.name}"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<div id="overlay">
+    <div id="popup">
+        <h2>Players Selection in Progress</h2>
+        <p>Captains are being assigned to players.<br>
+            Please wait while we process the selection.</p>
+        <p>Form will be submitted in <span id="countdown">5</span> seconds...</p>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    const form = document.getElementById("myForm");
+    const overlay = document.getElementById("overlay");
+    const countdownElement = document.getElementById("countdown");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      overlay.style.display = "flex";
+
+      let seconds = 5;
+      countdownElement.textContent = seconds;
+
+      const timer = setInterval(() => {
+        seconds--;
+        countdownElement.textContent = seconds;
+
+        if (seconds === 0) {
+          clearInterval(timer);
+          form.submit();
+        }
+      }, 1000);
+    });
+</script>
+</script>
+</body>
+</html>
