@@ -1,3 +1,3 @@
 # Xansa IT Solutions
-# For Team Selection Project Randomly 
-# Using Spring Boot 
+## For Team Selection Project Randomly 
+### Java + SpringBoot + Postresql + Thymeleaf + Web Development
